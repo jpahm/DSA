@@ -1,4 +1,4 @@
-# DSA
+# DSA [![.NET](https://github.com/jpahm/DSA/actions/workflows/dotnet.yml/badge.svg)](https://github.com/jpahm/DSA/actions/workflows/dotnet.yml)
 
 This repository simply serves as a collection of well-tested C# implementations of some common data structures and algorithms that I've put together **for practice and educational purposes.**
 
