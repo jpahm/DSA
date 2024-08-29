@@ -1,9 +1,13 @@
-﻿namespace DSA
+﻿using System;
+using System.Collections;
+
+namespace DSA
 {
     // Represents a basic singly-linked list.
-    public class LinkedList<T>
+    public class LinkedList<T> : IList<T> where T : IEquatable<T>
     {
-        private class Node(T value) {
+        private class Node(T value)
+        {
             public T Value = value;
             public Node? Next;
         }
@@ -13,100 +17,131 @@
 
         public LinkedList() { }
         public bool IsEmpty => Head == null;
-        public int Size { get; private set; }
+        public int Count { get; private set; }
+        public bool IsReadOnly => false;
 
-        public void AddEnd(T value) { 
+        public void Add(T value)
+        {
             if (Tail is null)
             {
-                Head = new Node(value);
+                Head = new(value);
                 Tail = Head;
-            } else
+            }
+            else
             {
-                Tail.Next = new Node(value);
+                Tail.Next = new(value);
                 Tail = Tail.Next;
             }
-            Size++;
+            Count++;
         }
 
         public void AddStart(T value)
         {
             if (Head is null)
             {
-                Head = new Node(value);
+                Head = new(value);
                 Tail = Head;
             }
             else
             {
-                Node newStart = new Node(value);
-                newStart.Next = Head;
+                Node newStart = new(value)
+                {
+                    Next = Head
+                };
                 Head = newStart;
             }
-            Size++;
+            Count++;
         }
 
-        public void DeleteEnd()
-        {
-            if (Head is null || Tail is null)
-            {
-                throw new IndexOutOfRangeException("Linked list is empty!");
-            }
-            else
-            {
-                Node temp = Head;
-                while (temp.Next?.Next != null)
-                    temp = temp.Next;
-
-                if (temp == Head)
-                    Head = Tail = null;
-                else
-                    temp.Next = Tail = null;
-            }
-            Size--;
-        }
-
-        public void DeleteStart()
+        public void RemoveEnd()
         {
             if (Head is null)
-            {
-                throw new IndexOutOfRangeException("Linked list is empty!");
-            }
+                return;
+
+            Node? temp = Head;
+            while (temp.Next?.Next != null)
+                temp = temp.Next;
+
+            if (temp.Next is null)
+                Head = Tail = null;
             else
             {
-                Head = Head.Next;
+                temp.Next = null;
+                Tail = temp;
             }
-            Size--;
+
+            Count--;
         }
 
-        public T GetValueAt(int index)
+        public void RemoveStart()
         {
+            if (Head is null)
+                return;
+
+            Head = Head.Next;
+            if (Head?.Next is null)
+                Tail = Head;
+
+            Count--;
+        }
+
+        public bool Remove(T item)
+        {
+            Node? prev = null;
+            for (Node? temp = Head; temp != null; prev = temp, temp = temp.Next)
+            {
+                if (temp.Value.Equals(item))
+                {
+                    if (prev is null)
+                        Head = temp.Next;
+                    else
+                        prev.Next = temp.Next;
+
+                    if (Head?.Next is null)
+                        Tail = Head;
+
+                    Count--;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public T GetAt(int index)
+        {
+            if (index < 0)
+                index = Count + index;
+
             Node? temp = Head;
             for (int i = 0; temp != null && i < index; ++i)
-            {
                 temp = temp.Next;
-            }
 
             if (temp == null)
-                throw new IndexOutOfRangeException("Cannot read past the end of the linked list!");
+                throw new ArgumentOutOfRangeException(nameof(index));
             else
                 return temp.Value;
         }
 
-        public void SetValueAt(int index, T value)
+        public void SetAt(int index, T value)
         {
+            if (index < 0)
+                index = Count + index;
+
             Node? temp = Head;
             for (int i = 0; temp != null && i < index; ++i)
-            {
                 temp = temp.Next;
-            }
 
             if (temp == null)
-                throw new IndexOutOfRangeException("Cannot write past the end of the linked list!");
+                throw new ArgumentOutOfRangeException(nameof(index));
             else
                 temp.Value = value;
         }
 
-        public void InsertAt(int index, T value)
+        public void Insert(int index, T value)
         {
+            if (index < 0)
+                index = Count + index;
+
             Node? prev = null;
             Node? temp = Head;
 
@@ -118,7 +153,7 @@
             }
 
             if (temp == null && i < index)
-                throw new IndexOutOfRangeException("Cannot write past the end of the linked list!");
+                throw new ArgumentOutOfRangeException(nameof(index));
 
             Node newNode = new(value);
             if (prev is not null)
@@ -131,11 +166,14 @@
             if (newNode.Next is null)
                 Tail = newNode;
 
-            Size++;
+            Count++;
         }
 
-        public void DeleteAt(int index)
+        public void RemoveAt(int index)
         {
+            if (index < 0)
+                index = Count + index;
+
             Node? prev = null;
             Node? temp = Head;
             for (int i = 0; temp != null && i < index; ++i)
@@ -145,22 +183,62 @@
             }
 
             if (temp == null)
-                throw new IndexOutOfRangeException("Cannot delete past the end of the linked list!");
+                throw new ArgumentOutOfRangeException(nameof(index));
 
             if (prev is not null)
                 prev.Next = temp.Next;
             else
-                Head = null;
+                Head = temp.Next;
 
             if (temp.Next is null)
                 Tail = prev;
 
-            Size--;
+            Count--;
         }
 
-        public T this[int idx] {
-            get => GetValueAt(idx);
-            set => SetValueAt(idx, value);
+        public int IndexOf(T item)
+        {
+            int index = 0;
+            for (Node? temp = Head; temp != null; temp = temp.Next, ++index)
+            {
+                if (temp.Value.Equals(item))
+                    return index;
+            }
+            return -1;
+        }
+
+        public void Clear() {
+            Head = Tail = null;
+            Count = 0;
+        }
+
+        public bool Contains(T item) => IndexOf(item) != -1;
+
+        public void CopyTo(T[] array, int arrayIndex)
+        {
+            ArgumentNullException.ThrowIfNull(array, nameof(array));
+            ArgumentOutOfRangeException.ThrowIfNegative(arrayIndex, nameof(arrayIndex));
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(arrayIndex, array.Length, nameof(arrayIndex));
+            
+            if (array.Length < arrayIndex + Count)
+                throw new ArgumentException("Array is not large enough!", nameof(array));
+
+            for (Node? temp = Head; temp != null; temp = temp.Next, ++arrayIndex)
+                array[arrayIndex] = temp.Value;
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            for (Node? node = Head; node != null; node = node.Next)
+                yield return node.Value;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        public T this[int idx]
+        {
+            get => GetAt(idx);
+            set => SetAt(idx, value);
         }
     }
 }
