@@ -18,7 +18,7 @@ namespace DSA.Tests
         {
             Assert.IsTrue(stack.IsEmpty);
             Assert.IsFalse(stack.IsFull);
-            Assert.AreEqual(0, stack.Size);
+            Assert.AreEqual(0, stack.Count);
 
             // Make sure popping or peeking from empty stack throws
             Assert.ThrowsException<IndexOutOfRangeException>(() => stack.Pop());
@@ -31,15 +31,15 @@ namespace DSA.Tests
             stack.Push(1);
             Assert.IsFalse(stack.IsEmpty);
             Assert.IsFalse(stack.IsFull);
-            Assert.AreEqual(1, stack.Size);
+            Assert.AreEqual(1, stack.Count);
             stack.Push(2);
             Assert.IsFalse(stack.IsEmpty);
             Assert.IsFalse(stack.IsFull);
-            Assert.AreEqual(2, stack.Size);
+            Assert.AreEqual(2, stack.Count);
             stack.Push(3);
             Assert.IsFalse(stack.IsEmpty);
             Assert.IsTrue(stack.IsFull);
-            Assert.AreEqual(3, stack.Size);
+            Assert.AreEqual(3, stack.Count);
 
             // Ensure adding a 4th throws
             Assert.ThrowsException<IndexOutOfRangeException>(() => stack.Push(4));
@@ -52,24 +52,24 @@ namespace DSA.Tests
             stack.Push(2);
             stack.Push(3);
             Assert.IsTrue(stack.IsFull);
-            Assert.AreEqual(3, stack.Size);
+            Assert.AreEqual(3, stack.Count);
 
             int val = stack.Pop();
             Assert.IsFalse(stack.IsFull);
             Assert.IsFalse(stack.IsEmpty);
-            Assert.AreEqual(2, stack.Size);
+            Assert.AreEqual(2, stack.Count);
             Assert.AreEqual(3, val);
 
             val = stack.Pop();
             Assert.IsFalse(stack.IsFull);
             Assert.IsFalse(stack.IsEmpty);
-            Assert.AreEqual(1, stack.Size);
+            Assert.AreEqual(1, stack.Count);
             Assert.AreEqual(2, val);
 
             val = stack.Pop();
             Assert.IsFalse(stack.IsFull);
             Assert.IsTrue(stack.IsEmpty);
-            Assert.AreEqual(0, stack.Size);
+            Assert.AreEqual(0, stack.Count);
             Assert.AreEqual(1, val);
         }
 
@@ -80,12 +80,12 @@ namespace DSA.Tests
             stack.Push(2);
             stack.Push(3);
             Assert.IsTrue(stack.IsFull);
-            Assert.AreEqual(3, stack.Size);
+            Assert.AreEqual(3, stack.Count);
 
             int val = stack.Peek();
             Assert.AreEqual(3, val);
             Assert.IsTrue(stack.IsFull);
-            Assert.AreEqual(3, stack.Size);
+            Assert.AreEqual(3, stack.Count);
         }
     }
 }

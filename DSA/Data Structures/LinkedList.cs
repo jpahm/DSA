@@ -3,19 +3,21 @@ using System.Collections;
 
 namespace DSA
 {
-    // Represents a basic singly-linked list.
-    public class LinkedList<T> : IList<T> where T : IEquatable<T>
+    // Represents a node in a linked list.
+    public class Node<T>(T value)
     {
-        private class Node(T value)
-        {
-            public T Value = value;
-            public Node? Next;
-        }
+        public T Value = value;
+        public Node<T>? Next;
+    }
 
-        private Node? Head;
-        private Node? Tail;
+    // Represents a basic singly-linked list.
+    public class LinkedList<T> : IList<T>
+    {
+        public Node<T>? Head { get; private set; }
+        public Node<T>? Tail { get; private set; }
 
         public LinkedList() { }
+
         public bool IsEmpty => Head == null;
         public int Count { get; private set; }
         public bool IsReadOnly => false;
@@ -44,7 +46,7 @@ namespace DSA
             }
             else
             {
-                Node newStart = new(value)
+                Node<T> newStart = new(value)
                 {
                     Next = Head
                 };
@@ -58,7 +60,7 @@ namespace DSA
             if (Head is null)
                 return;
 
-            Node? temp = Head;
+            Node<T>? temp = Head;
             while (temp.Next?.Next != null)
                 temp = temp.Next;
 
@@ -87,10 +89,10 @@ namespace DSA
 
         public bool Remove(T item)
         {
-            Node? prev = null;
-            for (Node? temp = Head; temp != null; prev = temp, temp = temp.Next)
+            Node<T>? prev = null;
+            for (Node<T>? temp = Head; temp != null; prev = temp, temp = temp.Next)
             {
-                if (temp.Value.Equals(item))
+                if ((temp.Value is null && item is null) || (temp.Value is not null && temp.Value.Equals(item)))
                 {
                     if (prev is null)
                         Head = temp.Next;
@@ -112,7 +114,7 @@ namespace DSA
             if (index < 0)
                 index = Count + index;
 
-            Node? temp = Head;
+            Node<T>? temp = Head;
             for (int i = 0; temp != null && i < index; ++i)
                 temp = temp.Next;
 
@@ -127,7 +129,7 @@ namespace DSA
             if (index < 0)
                 index = Count + index;
 
-            Node? temp = Head;
+            Node<T>? temp = Head;
             for (int i = 0; temp != null && i < index; ++i)
                 temp = temp.Next;
 
@@ -142,8 +144,8 @@ namespace DSA
             if (index < 0)
                 index = Count + index;
 
-            Node? prev = null;
-            Node? temp = Head;
+            Node<T>? prev = null;
+            Node<T>? temp = Head;
 
             int i = 0;
             for (; temp != null && i < index; ++i)
@@ -155,7 +157,7 @@ namespace DSA
             if (temp == null && i < index)
                 throw new ArgumentOutOfRangeException(nameof(index));
 
-            Node newNode = new(value);
+            Node<T> newNode = new(value);
             if (prev is not null)
                 prev.Next = newNode;
             else
@@ -174,8 +176,8 @@ namespace DSA
             if (index < 0)
                 index = Count + index;
 
-            Node? prev = null;
-            Node? temp = Head;
+            Node<T>? prev = null;
+            Node<T>? temp = Head;
             for (int i = 0; temp != null && i < index; ++i)
             {
                 prev = temp;
@@ -199,9 +201,11 @@ namespace DSA
         public int IndexOf(T item)
         {
             int index = 0;
-            for (Node? temp = Head; temp != null; temp = temp.Next, ++index)
+            for (Node<T>? temp = Head; temp != null; temp = temp.Next, ++index)
             {
-                if (temp.Value.Equals(item))
+                if (temp.Value is null && item is null)
+                    return index;
+                else if (temp.Value is not null && temp.Value.Equals(item))
                     return index;
             }
             return -1;
@@ -223,13 +227,13 @@ namespace DSA
             if (array.Length < arrayIndex + Count)
                 throw new ArgumentException("Array is not large enough!", nameof(array));
 
-            for (Node? temp = Head; temp != null; temp = temp.Next, ++arrayIndex)
+            for (Node<T>? temp = Head; temp != null; temp = temp.Next, ++arrayIndex)
                 array[arrayIndex] = temp.Value;
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            for (Node? node = Head; node != null; node = node.Next)
+            for (Node<T>? node = Head; node != null; node = node.Next)
                 yield return node.Value;
         }
 
