@@ -13,9 +13,11 @@ namespace DSA
     {
         public ValueType this[KeyType key] { get => GetValueAt(key); set => Add(key, value); }
 
-        public ICollection<KeyType> Keys => _buckets.SelectMany(bucket => bucket?.Select(x => x.Key) ?? []).ToImmutableArray();
+        public ImmutableArray<KeyType> Keys => _buckets.SelectMany(bucket => bucket?.Select(x => x.Key) ?? []).ToImmutableArray();
+        public ImmutableArray<ValueType> Values => _buckets.SelectMany(bucket => bucket?.Select(x => x.Value) ?? []).ToImmutableArray();
 
-        public ICollection<ValueType> Values => _buckets.SelectMany(bucket => bucket?.Select(x => x.Value) ?? []).ToImmutableArray();
+        ICollection<KeyType> IDictionary<KeyType, ValueType>.Keys => Keys;
+        ICollection<ValueType> IDictionary<KeyType, ValueType>.Values => Values;
 
         public int Count { get; private set; } = 0;
 
@@ -86,8 +88,8 @@ namespace DSA
             // Reset collision counter
             _collisions = 0;
 
-            // Only resize if clustering is bad enough
-            if (GetClustering() <= MaxAllowedClustering)
+            // Only resize if we're not at max capacity and clustering is bad enough
+            if (_sizeLog2 >= 31 || GetClustering() <= MaxAllowedClustering)
                 return false;
 
             _sizeLog2++;
@@ -136,10 +138,14 @@ namespace DSA
 
         private ValueType GetValueAt(KeyType key)
         {
-            var bucket = _buckets[GetBucketIndex(key)];
-            return bucket == null
-                ? throw new KeyNotFoundException()
-                : bucket.First(x => EqualityComparer<KeyType>.Default.Equals(x.Key, key)).Value;
+            var bucket = _buckets[GetBucketIndex(key)] ?? throw new KeyNotFoundException();
+            try
+            {
+                return GetValueInBucket(key, bucket);
+            } catch
+            {
+                throw new KeyNotFoundException();
+            }
         }
 
         private ValueType GetValueInBucket(KeyType key, LinkedList<KeyValuePair<KeyType, ValueType>> bucket)
@@ -259,15 +265,15 @@ namespace DSA
 
         public bool TryGetValue(KeyType key, [MaybeNullWhen(false)] out ValueType value)
         {
-            var bucket = _buckets[GetBucketIndex(key)];
-            if (bucket == null)
+            try
+            {
+                value = GetValueAt(key);
+                return true;
+            } catch
             {
                 value = default;
                 return false;
             }
-
-            value = GetValueInBucket(key, bucket);
-            return true;
         }
 
         IEnumerator IEnumerable.GetEnumerator()
