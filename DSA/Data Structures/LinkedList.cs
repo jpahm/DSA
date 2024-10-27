@@ -6,8 +6,8 @@ namespace DSA
     // Represents a node in a linked list.
     public class Node<T>(T value)
     {
-        public T Value = value;
-        public Node<T>? Next;
+        public T Value { get; set; } = value;
+        public Node<T>? Next { get; set; }
     }
 
     // Represents a basic singly-linked list.

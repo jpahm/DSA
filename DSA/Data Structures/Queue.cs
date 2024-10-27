@@ -14,7 +14,7 @@
         public bool IsFull => Rear == InternalArr.Length - 1;
         public bool IsEmpty => Front == -1;
 
-        public int Enqeue(T item)
+        public int Enqueue(T item)
         {
             // Check whether queue is full
             if (IsFull)

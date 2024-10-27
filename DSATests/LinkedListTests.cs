@@ -126,14 +126,14 @@ namespace DSA.Tests
 
             list[0] = 4;
             list[1] = 5;
-            list[2] = 6;
+            list[-1] = 6;
 
             Assert.AreEqual(3, list.Count);
             Assert.IsFalse(list.IsEmpty);
 
             Assert.AreEqual(list[0], 4);
             Assert.AreEqual(list[1], 5);
-            Assert.AreEqual(list[2], 6);
+            Assert.AreEqual(list[-1], 6);
 
             Assert.AreEqual(3, list.Count);
             Assert.IsFalse(list.IsEmpty);
@@ -187,7 +187,7 @@ namespace DSA.Tests
             Assert.AreEqual(1, list.Count);
             Assert.AreEqual(3, list[0]);
 
-            list.RemoveAt(0);
+            list.RemoveAt(-1);
 
             Assert.IsTrue(list.IsEmpty);
             Assert.AreEqual(0, list.Count);

@@ -28,29 +28,29 @@ namespace DSA.Tests
         [TestMethod()]
         public void EnqueueTest()
         {
-            queue.Enqeue(1);
+            queue.Enqueue(1);
             Assert.IsFalse(queue.IsEmpty);
             Assert.IsFalse(queue.IsFull);
             Assert.AreEqual(1, queue.Size);
-            queue.Enqeue(2);
+            queue.Enqueue(2);
             Assert.IsFalse(queue.IsEmpty);
             Assert.IsFalse(queue.IsFull);
             Assert.AreEqual(2, queue.Size);
-            queue.Enqeue(3);
+            queue.Enqueue(3);
             Assert.IsFalse(queue.IsEmpty);
             Assert.IsTrue(queue.IsFull);
             Assert.AreEqual(3, queue.Size);
 
             // Ensure adding a 4th throws
-            Assert.ThrowsException<IndexOutOfRangeException>(() => queue.Enqeue(4));
+            Assert.ThrowsException<IndexOutOfRangeException>(() => queue.Enqueue(4));
         }
 
         [TestMethod()]
         public void DequeueTest()
         {
-            queue.Enqeue(1);
-            queue.Enqeue(2);
-            queue.Enqeue(3);
+            queue.Enqueue(1);
+            queue.Enqueue(2);
+            queue.Enqueue(3);
             Assert.IsTrue(queue.IsFull);
             Assert.AreEqual(3, queue.Size);
 
@@ -76,9 +76,9 @@ namespace DSA.Tests
         [TestMethod()]
         public void PeekTest()
         {
-            queue.Enqeue(1);
-            queue.Enqeue(2);
-            queue.Enqeue(3);
+            queue.Enqueue(1);
+            queue.Enqueue(2);
+            queue.Enqueue(3);
             Assert.IsTrue(queue.IsFull);
             Assert.AreEqual(3, queue.Size);
 
