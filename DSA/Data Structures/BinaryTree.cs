@@ -23,8 +23,6 @@ namespace DSA
     /// <typeparam name="T">The type of item stored in the tree.</typeparam>
     public abstract class BinaryTree<T> : ICollection<T>
     {
-        protected IBinaryNode<T>? Root { get; set; }
-
         public BinaryTree() {}
 
         public BinaryTree(T root)
@@ -38,11 +36,7 @@ namespace DSA
 
         public abstract void Add(T item);
 
-        public void Clear()
-        {
-            Root = null;
-            Count = 0;
-        }
+        public abstract void Clear();
 
         public abstract bool Contains(T item);
 

@@ -13,62 +13,94 @@ using System.Xml.Linq;
 
 namespace DSA
 {
-    public class BSTNode<T>(T Value) : IBinaryNode<T>
+    public class AVLNode<T>(T Value) : IBinaryNode<T>
     {
         public T Value { get; set; } = Value;
         public int Count { get; set; } = 1;
-        public BSTNode<T>? Left { get; set; }
-        public BSTNode<T>? Right { get; set; }
+        public int Height { get; set; }
+        public AVLNode<T>? Left { get; set; }
+        public AVLNode<T>? Right { get; set; }
 
         IBinaryNode<T>? IBinaryNode<T>.Left
         {
             get { return Left; }
-            set { Left = (BSTNode<T>?)value; }
+            set { Left = (AVLNode<T>?)value; }
         }
         IBinaryNode<T>? IBinaryNode<T>.Right
         {
             get { return Right; }
-            set { Right = (BSTNode<T>?)value; }
+            set { Right = (AVLNode<T>?)value; }
         }
     }
     /// <summary>
-    /// Basic implementation of a BST. Supports duplicate values via counting.
+    /// Implementation of an AVL self-balancing BST. Supports duplicate values via counting.
     /// </summary>
     /// <typeparam name="T">The type of value to store in the BST.</typeparam>
-    public class BinarySearchTree<T> : BinaryTree<T> where T : IComparable<T>
+    public class AVLTree<T> : BinaryTree<T> where T : IComparable<T>
     {
-        public BSTNode<T>? Root { get; protected set; }
+        public AVLNode<T>? Root { get; protected set; }
+
+        private void BalanceSubtree(AVLNode<T> root)
+        {
+            int balanceFactor = (root.Left?.Height ?? 0) - (root.Right?.Height ?? 0);
+            if (balanceFactor > 1)
+            {
+                // Right subtree is too small
+
+                // Calculate balance factor of left subtree
+                balanceFactor = (root.Left!.Left?.Height ?? 0) - (root.Left!.Right?.Height ?? 0);
+                // If left subtree is right-heavy, rotate it left first
+                if (balanceFactor < 0)
+                    RotateLeft(root.Left!.Right!, root.Left);
+                RotateRight(root.Left, root);
+            }
+            else if (balanceFactor < -1)
+            {
+                // Left subtree is too small
+
+                // Calculate balance factor of right subtree
+                balanceFactor = (root.Right!.Left?.Height ?? 0) - (root.Right!.Right?.Height ?? 0);
+                // If right subtree is left-heavy, rotate it right first
+                if (balanceFactor > 0)
+                    RotateRight(root.Right!.Left!, root.Right);
+                RotateLeft(root.Right, root);
+            }
+        }
 
         public override void Add(T item)
         {
             if (Root is null)
-                Root = new BSTNode<T>(item);
+                Root = new AVLNode<T>(item);
             else
-                BinarySearchTree<T>.AddRecursive(item, Root);
+                AddRecursive(item, Root);
 
             Count++;
         }
 
-        private static void AddRecursive(T item, BSTNode<T> startNode)
+        private void AddRecursive(T item, AVLNode<T> node)
         {
-            switch (item.CompareTo(startNode.Value))
+            switch (item.CompareTo(node.Value))
             {
                 case -1:
-                    if (startNode.Left is null)
-                        startNode.Left = new BSTNode<T>(item);
+                    if (node.Left is null)
+                        node.Left = new AVLNode<T>(item);
                     else
-                        BinarySearchTree<T>.AddRecursive(item, startNode.Left);
+                        AddRecursive(item, node.Left);
                     break;
                 case 0:
-                    startNode.Count++;
-                    break;
+                    node.Count++;
+                    return;
                 case 1:
-                    if (startNode.Right is null)
-                        startNode.Right = new BSTNode<T>(item);
+                    if (node.Right is null)
+                        node.Right = new AVLNode<T>(item);
                     else
-                        BinarySearchTree<T>.AddRecursive(item, startNode.Right);
+                        AddRecursive(item, node.Right);
                     break;
             }
+            
+            // Update height and balance
+            node.Height = 1 + Math.Max(node.Left?.Height ?? 0, node.Right?.Height ?? 0);
+            BalanceSubtree(node);
         }
 
         public override void Clear()
@@ -77,14 +109,14 @@ namespace DSA
             Count = 0;
         }
 
-        public BSTNode<T>? Find(T item)
+        public AVLNode<T>? Find(T item)
         {
             if (Root is null)
                 return null;
             return FindRecursive(item, Root);
         }
 
-        private static BSTNode<T>? FindRecursive(T item, BSTNode<T> node)
+        private static AVLNode<T>? FindRecursive(T item, AVLNode<T> node)
         {
             int comparison = item.CompareTo(node.Value);
             if (comparison < 0)
@@ -128,7 +160,7 @@ namespace DSA
             return RemoveRecursive(item, Root);
         }
 
-        private bool RemoveRecursive(T item, BSTNode<T> node, BSTNode<T>? parentNode = null)
+        private bool RemoveRecursive(T item, AVLNode<T> node, AVLNode<T>? parentNode = null)
         {
             int comparison = item.CompareTo(node.Value);
             if (comparison < 0)
@@ -169,12 +201,11 @@ namespace DSA
                         parentNode.Left = null;
                     else
                         parentNode.Right = null;
-                }
-                else if (hasLeftChild && hasRightChild)
+                } else if (hasLeftChild && hasRightChild)
                 {
                     // Node has two children, replace the node with its inorder successor (next greater value)
-                    BSTNode<T> successor = node.Right!;
-                    BSTNode<T> successorParent = node;
+                    AVLNode<T> successor = node.Right!;
+                    AVLNode<T> successorParent = node;
                     while (successor.Left != null)
                     {
                         successorParent = successor;
@@ -183,8 +214,7 @@ namespace DSA
                     successorParent.Left = null;
                     node.Value = successor.Value;
                     node.Count = successor.Count;
-                }
-                else
+                } else
                 {
                     // Node only has one child, replace accordingly
                     if (hasLeftChild)
@@ -200,8 +230,49 @@ namespace DSA
                         node.Right = null;
                     }
                 }
+
+                // Update height and balance
+                node.Height = 1 + Math.Max(node.Left?.Height ?? 0, node.Right?.Height ?? 0);
+                BalanceSubtree(node);
+
                 return true;
             }
+        }
+
+        private void RotateLeft(AVLNode<T> node, AVLNode<T>? parentNode = null)
+        {
+            if (node.Right is null)
+                return;
+
+            if (node.Right.Left is not null)
+                node.Right = node.Right.Left;
+
+            if (parentNode is null)
+                Root = node.Right;
+            else if (parentNode.Left == node)
+                parentNode.Left = node.Right;
+            else
+                parentNode.Right = node.Right;
+
+            node.Right.Left = node;
+        }
+
+        private void RotateRight(AVLNode<T> node, AVLNode<T>? parentNode = null)
+        {
+            if (node.Left is null)
+                return;
+
+            if (node.Left.Right is not null)
+                node.Left = node.Left.Right;
+
+            if (parentNode is null)
+                Root = node.Left;
+            else if (parentNode.Right == node)
+                parentNode.Right = node.Left;
+            else
+                parentNode.Left = node.Left;
+
+            node.Left.Right = node;
         }
     }
 }

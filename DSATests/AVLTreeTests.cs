@@ -1,11 +1,22 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+// NOTE: These tests are essentially just the standard BST tests with some balance checks. 
+
 namespace DSA.Tests
 {
     [TestClass()]
-    public class BinarySearchTreeTests
+    public class AVLTreeTests
     {
-        private BinarySearchTree<int> tree = [];
+        private AVLTree<int> tree = [];
+
+        private void AssertIsBalanced()
+        {
+            foreach (AVLNode<int> node in tree.GetInOrderEnumerator(tree.Root))
+            {
+                int balanceFactor = (node.Left?.Height ?? 0) - (node.Right?.Height ?? 0);
+                Assert.IsTrue(balanceFactor <= 1 && balanceFactor >= -1);
+            }
+        }
 
         [TestInitialize]
         public void Init()
@@ -45,10 +56,14 @@ namespace DSA.Tests
             Assert.IsNotNull(tree.Root);
             Assert.AreEqual(10, tree.Root.Value);
 
+            AssertIsBalanced();
+
             tree.Add(9);
             Assert.AreEqual(11, tree.Count);
             Assert.IsNotNull(tree.Root);
             Assert.AreEqual(10, tree.Root.Value);
+
+            AssertIsBalanced();
         }
 
         [TestMethod()]
@@ -59,6 +74,8 @@ namespace DSA.Tests
             Assert.IsNotNull(tree.Root);
             Assert.AreEqual(10, tree.Root.Value);
 
+            AssertIsBalanced();
+
             // Remove root
 
             tree.Remove(10);
@@ -66,6 +83,8 @@ namespace DSA.Tests
             Assert.IsNotNull(tree.Root);
             Assert.AreEqual(11, tree.Root.Value);
             Assert.IsFalse(tree.Contains(10));
+
+            AssertIsBalanced();
 
             int[] ints = new int[tree.Count];
             int[] correctInts = [3, 4, 5, 6, 7, 8, 9, 11, 12, 13];
@@ -85,6 +104,8 @@ namespace DSA.Tests
             Assert.AreEqual(11, tree.Root.Value);
             Assert.IsFalse(tree.Contains(3));
 
+            AssertIsBalanced();
+
             ints = new int[tree.Count];
             correctInts = [4, 5, 6, 7, 8, 9, 11, 12, 13];
 
@@ -102,6 +123,8 @@ namespace DSA.Tests
             Assert.IsNotNull(tree.Root);
             Assert.AreEqual(11, tree.Root.Value);
             Assert.IsFalse(tree.Contains(13));
+
+            AssertIsBalanced();
 
             ints = new int[tree.Count];
             correctInts = [4, 5, 6, 7, 8, 9, 11, 12];
@@ -125,6 +148,8 @@ namespace DSA.Tests
             Assert.IsFalse(tree.Contains(8));
             Assert.IsFalse(tree.Contains(4));
 
+            AssertIsBalanced();
+
             ints = new int[tree.Count];
             correctInts = [5, 7, 9, 11, 12, 13];
 
@@ -146,6 +171,8 @@ namespace DSA.Tests
             Assert.AreEqual(10, tree.Root.Value);
             Assert.AreEqual(3, tree.Root.Count);
 
+            AssertIsBalanced();
+
             // Remove first copy of root
             tree.Remove(10);
             Assert.AreEqual(15, tree.Count);
@@ -153,6 +180,8 @@ namespace DSA.Tests
             Assert.AreEqual(10, tree.Root.Value);
             Assert.AreEqual(2, tree.Root.Count);
             Assert.IsTrue(tree.Contains(10));
+
+            AssertIsBalanced();
 
             // Remove root entirely
             tree.Remove(10);
@@ -162,6 +191,8 @@ namespace DSA.Tests
             Assert.AreEqual(11, tree.Root.Value);
             Assert.AreEqual(1, tree.Root.Count);
             Assert.IsFalse(tree.Contains(10));
+
+            AssertIsBalanced();
 
             // Make sure other duplicates are valid
             Assert.IsTrue(tree.Contains(8));
