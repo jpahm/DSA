@@ -65,6 +65,7 @@ namespace DSA.Tests
             Assert.AreEqual(10, tree.Count);
             Assert.IsNotNull(tree.BSTRoot);
             Assert.AreEqual(11, tree.BSTRoot.Value);
+            Assert.IsFalse(tree.Contains(10));
 
             int[] ints = new int[tree.Count];
             int[] correctInts = [3, 4, 5, 6, 7, 8, 9, 11, 12, 13];
@@ -82,6 +83,7 @@ namespace DSA.Tests
             Assert.AreEqual(9, tree.Count);
             Assert.IsNotNull(tree.BSTRoot);
             Assert.AreEqual(11, tree.BSTRoot.Value);
+            Assert.IsFalse(tree.Contains(3));
 
             ints = new int[tree.Count];
             correctInts = [4, 5, 6, 7, 8, 9, 11, 12, 13];
@@ -99,6 +101,7 @@ namespace DSA.Tests
             Assert.AreEqual(8, tree.Count);
             Assert.IsNotNull(tree.BSTRoot);
             Assert.AreEqual(11, tree.BSTRoot.Value);
+            Assert.IsFalse(tree.Contains(13));
 
             ints = new int[tree.Count];
             correctInts = [4, 5, 6, 7, 8, 9, 11, 12];
@@ -118,6 +121,9 @@ namespace DSA.Tests
             Assert.AreEqual(5, tree.Count);
             Assert.IsNotNull(tree.BSTRoot);
             Assert.AreEqual(11, tree.BSTRoot.Value);
+            Assert.IsFalse(tree.Contains(6));
+            Assert.IsFalse(tree.Contains(8));
+            Assert.IsFalse(tree.Contains(4));
 
             ints = new int[tree.Count];
             correctInts = [5, 7, 9, 11, 12, 13];
@@ -128,6 +134,46 @@ namespace DSA.Tests
 
             for (int i = 0; i < tree.Count; i++)
                 Assert.AreEqual(correctInts[i], ints[i]);
+        }
+
+        [TestMethod()]
+        public void DuplicateTest()
+        {
+            // Create usual test tree but with some duplicates (10x3, 8x2, 3x3)
+            tree = [10, 10, 10, 6, 12, 4, 8, 8, 11, 13, 3, 5, 3, 7, 3, 9];
+            Assert.AreEqual(16, tree.Count);
+            Assert.IsNotNull(tree.BSTRoot);
+            Assert.AreEqual(10, tree.BSTRoot.Value);
+            Assert.AreEqual(3, tree.BSTRoot.Count);
+
+            // Remove first copy of root
+            tree.Remove(10);
+            Assert.AreEqual(15, tree.Count);
+            Assert.IsNotNull(tree.BSTRoot);
+            Assert.AreEqual(10, tree.BSTRoot.Value);
+            Assert.AreEqual(2, tree.BSTRoot.Count);
+            Assert.IsTrue(tree.Contains(10));
+
+            // Remove root entirely
+            tree.Remove(10);
+            tree.Remove(10);
+            Assert.AreEqual(13, tree.Count);
+            Assert.IsNotNull(tree.BSTRoot);
+            Assert.AreEqual(11, tree.BSTRoot.Value);
+            Assert.AreEqual(1, tree.BSTRoot.Count);
+            Assert.IsFalse(tree.Contains(10));
+
+            // Make sure other duplicates are valid
+            Assert.IsTrue(tree.Contains(8));
+            Assert.IsTrue(tree.Contains(3));
+
+            var node = tree.Find(8);
+            Assert.IsNotNull(node);
+            Assert.AreEqual(2, node.Count);
+
+            node = tree.Find(3);
+            Assert.IsNotNull(node);
+            Assert.AreEqual(3, node.Count);
         }
 
         [TestMethod()]

@@ -16,7 +16,7 @@ namespace DSA
     public class BSTNode<T>(T Value) : IBinaryNode<T>
     {
         public T Value { get; set; } = Value;
-        public uint Count { get; set; } = 1;
+        public int Count { get; set; } = 1;
         public BSTNode<T>? Left { get; set; }
         public BSTNode<T>? Right { get; set; }
 
