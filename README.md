@@ -6,6 +6,9 @@ You are free to use the contents of this project as you wish. Note that most of 
 
 #### CURRENTLY WIP!
 
+## Usage
+This project compiles as a shared library which can then be used in other applications; it cannot be executed directly.
+
 ## Data Structures:
 - Stack
 - Queue
