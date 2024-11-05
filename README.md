@@ -15,6 +15,7 @@ This project compiles as a shared library which can then be used in other applic
 - Deque (double-ended queue)
 - Circular Queue
 - Linked List
+- Doubly Linked List
 - Hash table (using multiplicative hashing and chaining)
 - Binary Search Tree
 - AVL Tree (self-balancing BST)
