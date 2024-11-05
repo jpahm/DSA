@@ -22,13 +22,13 @@ namespace DSA.Tests
             // Make sure all enumerations halt immediately on empty tree
             foreach (var _ in tree)
                 Assert.Fail();
-            foreach (var _ in tree.GetBreadthEnumerator(tree.Root))
+            foreach (var _ in tree.GetBreadthEnumerable(tree.Root))
                 Assert.Fail();
-            foreach (var _ in tree.GetInOrderEnumerator(tree.Root))
+            foreach (var _ in tree.GetInOrderEnumerable(tree.Root))
                 Assert.Fail();
-            foreach (var _ in tree.GetPreOrderEnumerator(tree.Root))
+            foreach (var _ in tree.GetPreOrderEnumerable(tree.Root))
                 Assert.Fail();
-            foreach (var _ in tree.GetPostOrderEnumerator(tree.Root))
+            foreach (var _ in tree.GetPostOrderEnumerable(tree.Root))
                 Assert.Fail();
 
             // Clearing an empty tree should not alter anything
@@ -230,7 +230,7 @@ namespace DSA.Tests
             tree = [10, 6, 12, 4, 8, 11, 13, 3, 5, 7, 9];
 
             int idx = 0;
-            foreach (var node in tree.GetInOrderEnumerator(tree.Root))
+            foreach (var node in tree.GetInOrderEnumerable(tree.Root))
                 ints[idx++] = node.Value;
 
             for (int i = 0; i < 11; i++)
@@ -246,7 +246,7 @@ namespace DSA.Tests
             tree = [10, 6, 12, 4, 8, 11, 13, 3, 5, 7, 9];
 
             int idx = 0;
-            foreach (var node in tree.GetPreOrderEnumerator(tree.Root))
+            foreach (var node in tree.GetPreOrderEnumerable(tree.Root))
             {
                 ints[idx++] = node.Value;
             }
@@ -264,7 +264,7 @@ namespace DSA.Tests
             tree = [10, 6, 12, 4, 8, 11, 13, 3, 5, 7, 9];
 
             int idx = 0;
-            foreach (var node in tree.GetPostOrderEnumerator(tree.Root))
+            foreach (var node in tree.GetPostOrderEnumerable(tree.Root))
             {
                 ints[idx++] = node.Value;
             }
@@ -282,7 +282,7 @@ namespace DSA.Tests
             tree = [10, 6, 12, 4, 8, 11, 13, 3, 5, 7, 9];
 
             int idx = 0;
-            foreach (var node in tree.GetBreadthEnumerator(tree.Root))
+            foreach (var node in tree.GetBreadthEnumerable(tree.Root))
             {
                 ints[idx++] = node.Value;
             }

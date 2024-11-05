@@ -166,7 +166,7 @@ namespace DSA
             {
                 // Check to see whether we're just replacing an existing value or if there's a collision
                 bool replaced = false;
-                for (Node<KeyValuePair<KeyType, ValueType>>? node = bucket.Head; node != null; node = node.Next)
+                for (LinkedListNode<KeyValuePair<KeyType, ValueType>>? node = bucket.Head; node != null; node = node.Next)
                 {
                     if (EqualityComparer<KeyType>.Default.Equals(key, node.Value.Key))
                     {

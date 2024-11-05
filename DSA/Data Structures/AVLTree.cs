@@ -143,13 +143,13 @@ namespace DSA
 
         public override void CopyTo(T[] array, int arrayIndex)
         {
-            foreach (var node in GetInOrderEnumerator(Root))
+            foreach (var node in GetInOrderEnumerable(Root))
                 array[arrayIndex++] = node.Value;
         }
 
         public override IEnumerator<T> GetEnumerator()
         {
-            foreach (var node in GetInOrderEnumerator(Root))
+            foreach (var node in GetInOrderEnumerable(Root))
                 yield return node.Value;
         }
 

@@ -70,12 +70,20 @@ namespace DSA.Tests
 
             Assert.AreEqual(2, list.Count);
             Assert.IsFalse(list.IsEmpty);
+            Assert.AreEqual(1, list.Head!.Value);
+            Assert.AreEqual(2, list.Tail!.Value);
 
             list.RemoveEnd();
+
+            Assert.AreEqual(1, list.Head!.Value);
+            Assert.AreEqual(1, list.Tail!.Value);
+
             list.RemoveEnd();
 
             Assert.AreEqual(0, list.Count);
             Assert.IsTrue(list.IsEmpty);
+            Assert.IsNull(list.Head);
+            Assert.IsNull(list.Tail);
         }
 
         [TestMethod()]
@@ -87,12 +95,20 @@ namespace DSA.Tests
 
             Assert.AreEqual(2, list.Count);
             Assert.IsFalse(list.IsEmpty);
+            Assert.AreEqual(2, list.Head!.Value);
+            Assert.AreEqual(3, list.Tail!.Value);
 
             list.RemoveStart();
+
+            Assert.AreEqual(3, list.Head!.Value);
+            Assert.AreEqual(3, list.Tail!.Value);
+
             list.RemoveStart();
 
             Assert.AreEqual(0, list.Count);
             Assert.IsTrue(list.IsEmpty);
+            Assert.IsNull(list.Head);
+            Assert.IsNull(list.Tail);
         }
 
         [TestMethod()]
@@ -104,12 +120,20 @@ namespace DSA.Tests
 
             Assert.AreEqual(2, list.Count);
             Assert.IsFalse(list.IsEmpty);
+            Assert.AreEqual(1, list.Head!.Value);
+            Assert.AreEqual(3, list.Tail!.Value);
 
             list.Remove(1);
+
+            Assert.AreEqual(3, list.Head!.Value);
+            Assert.AreEqual(3, list.Tail!.Value);
+
             list.Remove(3);
 
             Assert.AreEqual(0, list.Count);
             Assert.IsTrue(list.IsEmpty);
+            Assert.IsNull(list.Head);
+            Assert.IsNull(list.Tail);
         }
 
         [TestMethod()]
@@ -161,12 +185,8 @@ namespace DSA.Tests
 
             Assert.AreEqual(6, list.Count);
 
-            Assert.AreEqual(list[0], 1);
-            Assert.AreEqual(list[1], 2);
-            Assert.AreEqual(list[2], 3);
-            Assert.AreEqual(list[3], 4);
-            Assert.AreEqual(list[4], 5);
-            Assert.AreEqual(list[5], 6);
+            for (int i = 0; i < list.Count; i++)
+                Assert.AreEqual(i + 1, list[i]);
         }
 
         [TestMethod()]
