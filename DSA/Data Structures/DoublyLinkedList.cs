@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace DSA
 {
-    // Represents a node in a linked list.
+    // Represents a node in a doubly linked list.
     public class DoublyLinkedListNode<T>(T value)
     {
         public T Value { get; set; } = value;
@@ -11,7 +11,7 @@ namespace DSA
         public DoublyLinkedListNode<T>? Previous { get; set; }
     }
 
-    // Represents a basic singly-linked list.
+    // Represents a basic doubly-linked list.
     public class DoublyLinkedList<T> : IList<T>
     {
         public DoublyLinkedListNode<T>? Head { get; private set; }
@@ -104,7 +104,7 @@ namespace DSA
                         Head = temp.Next;
                     else
                         temp.Previous.Next = temp.Next;
-                    
+
                     // Update backwards ref or set new tail
                     if (temp.Next is not null)
                         temp.Next.Previous = temp.Previous;
@@ -284,7 +284,8 @@ namespace DSA
             return -1;
         }
 
-        public void Clear() {
+        public void Clear()
+        {
             Head = Tail = null;
             Count = 0;
         }
@@ -296,7 +297,7 @@ namespace DSA
             ArgumentNullException.ThrowIfNull(array, nameof(array));
             ArgumentOutOfRangeException.ThrowIfNegative(arrayIndex, nameof(arrayIndex));
             ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(arrayIndex, array.Length, nameof(arrayIndex));
-            
+
             if (array.Length < arrayIndex + Count)
                 throw new ArgumentException("Array is not large enough!", nameof(array));
 
