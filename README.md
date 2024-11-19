@@ -21,4 +21,7 @@ This project compiles as a shared library which can then be used in other applic
 - AVL Tree (self-balancing BST)
 
 ## Algorithms:
-- TBD
+- Sorting
+	- Bubble sort
+	- Insertion sort
+	- Merge sort
